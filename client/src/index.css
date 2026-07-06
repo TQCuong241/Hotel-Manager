@@ -1,0 +1,417 @@
+@import url('https://fonts.googleapis.com/css2?family=Shrikhand&display=swap');
+@import "tailwindcss";
+
+
+/* ─────────────────────────────────────────────────────────
+   Theme System — Geist Font + Semantic Colors
+   ───────────────────────────────────────────────────────── */
+@theme {
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+
+  /* Semantic colors linked to CSS variables */
+  --color-bg-app: var(--bg-app);
+  --color-bg-card: var(--bg-card);
+  --color-bg-side: var(--bg-side);
+  --color-border-subtle: var(--border-subtle);
+  --color-text-main: var(--text-main);
+  --color-text-sub: var(--text-sub);
+}
+
+/* ─────────────────────────────────────────────────────────
+   Motion Design Tokens — per skill/motion-design/references
+   ───────────────────────────────────────────────────────── */
+:root {
+  /* Semantic Colors - Dark mode default */
+  --bg-app: #09090b;
+  --bg-card: rgba(24, 24, 27, 0.4);
+  --bg-side: #09090b;
+  --border-subtle: rgba(39, 39, 42, 0.6);
+  --text-main: #f4f4f5;
+  --text-sub: #71717a;
+
+  /* Durations */
+  --dur-1: 120ms;
+  --dur-2: 180ms;
+  --dur-3: 240ms;
+  --dur-4: 300ms;
+  --dur-5: 500ms;
+
+  /* Ease-Out family — enter/exit, user-triggered */
+  --ease-out-quad:  cubic-bezier(.25,  .46,  .45,  .94);
+  --ease-out-cubic: cubic-bezier(.215, .61,  .355, 1);
+  --ease-out-quart: cubic-bezier(.165, .84,  .44,  1);
+  --ease-out-quint: cubic-bezier(.23,  1,    .32,  1);
+  --ease-out-expo:  cubic-bezier(.19,  1,    .22,  1);
+
+  /* Ease-In-Out family — on-screen reposition/morph */
+  --ease-in-out-quad:   cubic-bezier(.455, .03,  .515, .955);
+  --ease-in-out-cubic:  cubic-bezier(.645, .045, .355, 1);
+  --ease-in-out-quart:  cubic-bezier(.77,  0,    .175, 1);
+  --ease-in-out-quint:  cubic-bezier(.86,  0,    .07,  1);
+}
+
+.light {
+  /* Semantic Colors - Light mode override */
+  --bg-app: #f4f4f5;
+  --bg-card: #ffffff;
+  --bg-side: #ffffff;
+  --border-subtle: #e4e4e7;
+  --text-main: #09090b;
+  --text-sub: #71717a;
+}
+
+
+/* ─────────────────────────────────────────────────────────
+   Accessibility: Respect prefers-reduced-motion
+   ───────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────
+   Modal Overlay — Enter/Exit
+   Pattern: Enter/Exit → ease-out-quart, 240ms
+   Scale from 0.95 (medium surface, never from 0)
+   Transform-origin: center (fullscreen modal)
+   ───────────────────────────────────────────────────────── */
+@keyframes modal-backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+@keyframes modal-out {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.97) translateY(6px);
+  }
+}
+
+.modal-backdrop {
+  animation: modal-backdrop-in var(--dur-3) var(--ease-out-quart) forwards;
+}
+.modal-panel {
+  animation: modal-in var(--dur-3) var(--ease-out-quart) forwards;
+  transform-origin: center center;
+}
+
+/* ─────────────────────────────────────────────────────────
+   Guest Cart Drawer — Slide up from bottom
+   Pattern: Enter/Exit → ease-out-quart, 300ms (large surface)
+   ───────────────────────────────────────────────────────── */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up var(--dur-4) var(--ease-out-quart) forwards;
+}
+
+/* ─────────────────────────────────────────────────────────
+   Toast / New Order Alert — Slide in from right
+   Pattern: Enter → ease-out-cubic, 180ms
+   ───────────────────────────────────────────────────────── */
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(20px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+.animate-toast-in {
+  animation: toast-in var(--dur-2) var(--ease-out-cubic) forwards;
+}
+
+/* ─────────────────────────────────────────────────────────
+   Sidebar active indicator — On-screen morph
+   Pattern: Morph → ease-in-out-cubic, 240ms
+   Applied via transition on background/border
+   ───────────────────────────────────────────────────────── */
+
+/* ─────────────────────────────────────────────────────────
+   Room card — Hover subtle state
+   Pattern: Hover → ease 150ms (color, shadow only)
+   Hover doesn't shift position (would cause cursor flicker)
+   ───────────────────────────────────────────────────────── */
+
+/* ─────────────────────────────────────────────────────────
+   Button press — Micro feedback
+   Pattern: ease-out-quad, 120ms, scale(0.97)
+   ───────────────────────────────────────────────────────── */
+
+/* ─────────────────────────────────────────────────────────
+   Tab content fade — Page-level transitions
+   Pattern: Enter → ease-out-quart, 180ms, opacity + translate
+   ───────────────────────────────────────────────────────── */
+@keyframes tab-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-tab-in {
+  animation: tab-in var(--dur-2) var(--ease-out-quart) forwards;
+}
+
+/* ─────────────────────────────────────────────────────────
+   Staggered list items — each child offset
+   ───────────────────────────────────────────────────────── */
+@keyframes item-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-item-in {
+  animation: item-in var(--dur-3) var(--ease-out-quart) both;
+}
+
+/* Order badge pulse — override Tailwind's default to be gentler */
+@keyframes gentle-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.6; }
+}
+.animate-pulse {
+  animation: gentle-pulse 2s ease infinite;
+}
+
+/* ─────────────────────────────────────────────────────────
+   Playful Delivery Animation Keyframes
+   ───────────────────────────────────────────────────────── */
+
+/* Button ripple wave */
+@keyframes button-ripple {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(16, 185, 129, 0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Parcel fall (nested version — only vertical offset) */
+@keyframes parcel-fall {
+  0%, 35% {
+    transform: translateY(-90px) rotate(-15deg);
+    opacity: 0;
+  }
+  38% {
+    opacity: 1;
+  }
+  /* Land inside cart basket */
+  48% {
+    transform: translateY(-12px) rotate(5deg);
+  }
+  /* Bounce up */
+  51% {
+    transform: translateY(-22px) rotate(8deg);
+  }
+  /* Settle */
+  55%, 100% {
+    transform: translateY(-12px) rotate(6deg);
+  }
+}
+
+/* Landing shadow inside the basket */
+@keyframes shadow-scale {
+  0%, 35% {
+    transform: scaleX(0.1);
+    opacity: 0;
+  }
+  48% {
+    transform: scaleX(1);
+    opacity: 0.3;
+  }
+  51% {
+    transform: scaleX(0.7);
+    opacity: 0.15;
+  }
+  55%, 100% {
+    transform: scaleX(1);
+    opacity: 0.3;
+  }
+}
+
+/* Cart drive-in, stop, drive-out (relative translate to center) */
+@keyframes cart-drive {
+  0% {
+    transform: translate(-220px, 0);
+  }
+  /* Stops in middle for pickup */
+  35%, 55% {
+    transform: translate(-50%, 0); /* perfectly centered */
+  }
+  /* Accelerates and drives completely offscreen right */
+  100% {
+    transform: translate(220px, 0);
+  }
+}
+
+/* Cart body suspension bounce */
+@keyframes cart-suspension {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  15%, 85% {
+    transform: translateY(-0.8px);
+  }
+  30%, 70% {
+    transform: translateY(0.4px);
+  }
+  45%, 65% {
+    transform: translateY(-0.5px);
+  }
+  48% {
+    /* Impact bounce when box hits bed */
+    transform: translateY(1.2px);
+  }
+}
+
+/* Wheels spin */
+@keyframes wheel-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  35% {
+    transform: rotate(360deg);
+  }
+  55% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(1080deg);
+  }
+}
+
+/* Confetti particles burst on impact */
+@keyframes particle-burst-1 {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(-25px, -15px) scale(0); opacity: 0; }
+}
+@keyframes particle-burst-2 {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(25px, -15px) scale(0); opacity: 0; }
+}
+@keyframes particle-burst-3 {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(-10px, -25px) scale(0); opacity: 0; }
+}
+@keyframes particle-burst-4 {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(10px, -25px) scale(0); opacity: 0; }
+}
+
+/* Checkmark stroke draw effect */
+@keyframes checkmark-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Class hooks for layout and animations */
+.animate-ripple {
+  animation: button-ripple 0.4s ease-out forwards;
+}
+
+.animate-parcel-fall {
+  animation: parcel-fall 2.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.animate-shadow-scale {
+  animation: shadow-scale 2.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.animate-cart-drive {
+  animation: cart-drive 2.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-cart-bounce {
+  animation: cart-suspension 2.2s ease-in-out forwards;
+}
+
+.animate-wheel-spin {
+  animation: wheel-spin 2.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-particle-1 {
+  animation: particle-burst-1 0.5s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+.animate-particle-2 {
+  animation: particle-burst-2 0.5s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+.animate-particle-3 {
+  animation: particle-burst-3 0.5s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+.animate-particle-4 {
+  animation: particle-burst-4 0.5s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
+.animate-checkmark-draw {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  animation: checkmark-draw 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.1s forwards;
+}
+
+/* Dynamic Rainbow Font Style for Hotel Logo */
+.brand-rainbow-title {
+  --stroke-width: 6px;
+  font-size: 26px;
+  font-family: "Shrikhand", serif;
+  color: #f7f7f7;
+  -webkit-text-stroke: var(--stroke-width) transparent;
+  background-image: linear-gradient(90deg, #c1deff 12%, #f2c9de 24%, #f1ccac 36%, #eae189 48%, #aae5b2 60%, #fffc 72%, #decdff 84%, #c1deff);
+  background-size: 150% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  filter: drop-shadow(1px 1px 3px rgba(0,0,0,0.15));
+  transition: all 0.3s ease;
+  will-change: background-position, scale, filter;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.brand-rainbow-title:hover {
+  background-position: 100% 0;
+  scale: 1.05;
+  filter: drop-shadow(2px 2px 8px rgba(0,0,0,0.2));
+}
+

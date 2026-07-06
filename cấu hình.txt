@@ -1,0 +1,4 @@
+1 - Nhấn tổ hợp phím Windows + R trên bàn phím.
+2 - Nhập vào dòng chữ shell:startup rồi bấm OK (thư mục Startup của Windows sẽ hiện ra).
+3 - Click chuột phải vào file "KhoiDongAn.vbs" trong thư mục dự án của bạn và chọn Create Shortcut (Tạo lối tắt).
+4 - Kéo thả lối tắt (Shortcut) vừa tạo vào thư mục Startup ở bước 2.
